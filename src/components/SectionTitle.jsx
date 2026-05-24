@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Colors from '../constants/colors';
 
-export default function SectionTitle({ title, subtitle, rightElement }) {
+// Passando = '' e = null, o TypeScript entende que elas são opcionais
+export default function SectionTitle({ title, subtitle = '', rightElement = null }) {
   return (
     <View style={styles.container}>
       <View style={styles.textGroup}>

@@ -136,8 +136,8 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 14,
     paddingVertical: 14,
-    backgroundColor: 'rgba(0,0,0,0)',
-    background: 'linear-gradient(transparent, rgba(0,0,0,0.85))',
+    // Deletamos a linha do gradiente e colocamos um fundo preto 50% transparente
+    backgroundColor: 'rgba(0,0,0,0.5)', 
   },
   categoryBadge: {
     alignSelf: 'flex-start',

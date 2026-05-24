@@ -9,10 +9,16 @@ import {
 import Colors from '../constants/colors';
 import StarRating from './StarRating';
 
-export default function GameCardHorizontal({ game, onPress, onWant }) {
+export default function GameCardHorizontal({ 
+  game, 
+  onPress = () => {}, 
+  onWant = () => {} 
+}) {
+  // Adicione esta linha aqui:
   const [imgError, setImgError] = useState(false);
 
   return (
+
     <TouchableOpacity
       style={styles.card}
       onPress={() => onPress && onPress(game)}

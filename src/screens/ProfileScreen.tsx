@@ -313,7 +313,7 @@ export default function ProfileScreen() {
           label={editModal.label}
           value={editModal.value === '—' ? '' : editModal.value}
           onClose={() => setEditModal(null)}
-          onSave={(v) => { saveEdit(editModal.field, v); setEditModal(null); }}
+          onSave={(v: string) => { saveEdit(editModal.field, v); setEditModal(null); }}
         />
       )}
     </SafeAreaView>

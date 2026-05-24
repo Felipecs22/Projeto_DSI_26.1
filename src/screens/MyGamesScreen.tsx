@@ -108,7 +108,7 @@ export default function MyGamesScreen() {
         game={selectedGame}
         currentStatus={selectedGame?.status}
         onClose={() => setSelectedGame(null)}
-        onSelect={(newStatus) => {
+        onSelect={(newStatus: string) => {
           if (selectedGame) handleStatusChange(selectedGame.id, newStatus);
         }}
       />
