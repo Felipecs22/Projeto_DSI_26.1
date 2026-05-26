@@ -23,6 +23,10 @@ export class ReviewRepository extends BaseRepository<Review> {
     return this.findWhere('gameId', '==', gameId, { limitTo });
   }
 
+  async getUserGameReview(userId: string, gameId: string): Promise<Review | null> {
+    return this.findById(`${userId}_${gameId}`);
+  }
+
   /** Exclui uma review */
   async deleteReview(reviewId: string): Promise<void> {
     await super.delete(reviewId);

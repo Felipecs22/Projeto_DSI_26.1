@@ -3,17 +3,19 @@ import {
   View, Text, ScrollView, StyleSheet, SafeAreaView,
   StatusBar, FlatList, Image, TouchableOpacity,
 } from 'react-native';
-import Colors from '../constants/colors';
 import { communityReviews } from '../constants/data';
 import { GameService } from '../services/GameService';
 import { Game } from '../models/Game';
 import SectionTitle from '../components/SectionTitle';
 import ReviewCard from '../components/ReviewCard';
 import StarRating from '../components/StarRating';
+import { useTheme } from '../context/ThemeContext';
 
 /* ─── Community Game Card ────────────────────────────────────────────────── */
 function CommunityGameCard({ game }: { game: Game }) {
   const [err, setErr] = useState(false);
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   return (
     <TouchableOpacity style={styles.gameCard} activeOpacity={0.85}>
       <View style={styles.gameThumb}>
@@ -45,6 +47,8 @@ function CommunityGameCard({ game }: { game: Game }) {
 /* ─── Screen ─────────────────────────────────────────────────────────────── */
 export default function CommunityScreen() {
   const [topGames, setTopGames] = useState<Game[]>([]);
+  const { colors, darkMode } = useTheme();
+  const styles = createStyles(colors);
 
   useEffect(() => {
     // Usa GameService: top jogos mais bem avaliados do catálogo Steam real
@@ -54,7 +58,7 @@ export default function CommunityScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.BG_PRIMARY} />
+      <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} backgroundColor={colors.BG_PRIMARY} />
 
       <ScrollView showsVerticalScrollIndicator={false}>
 
@@ -88,21 +92,21 @@ export default function CommunityScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container:            { flex: 1, backgroundColor: Colors.BG_PRIMARY },
+const createStyles = (colors: any) => StyleSheet.create({
+  container:            { flex: 1, backgroundColor: colors.BG_PRIMARY },
   section:              { marginTop: 20 },
   titleRow:             { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 16, marginBottom: 12 },
-  sectionTitle:         { color: Colors.TEXT_PRIMARY, fontSize: 21, fontWeight: '700' },
+  sectionTitle:         { color: colors.TEXT_PRIMARY, fontSize: 21, fontWeight: '700' },
   communityIcon:        { fontSize: 20 },
   carousel:             { paddingLeft: 16, paddingRight: 8 },
   gameCard:             { width: 160, marginRight: 12 },
-  gameThumb:            { width: '100%', aspectRatio: 3/4, borderRadius: 10, overflow: 'hidden', backgroundColor: Colors.BG_CARD },
+  gameThumb:            { width: '100%', aspectRatio: 3/4, borderRadius: 10, overflow: 'hidden', backgroundColor: colors.BG_CARD },
   gameImage:            { width: '100%', height: '100%' },
   gamePlaceholder:      { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 8 },
-  gamePlaceholderText:  { color: Colors.TEXT_MUTED, fontSize: 11, textAlign: 'center' },
+  gamePlaceholderText:  { color: colors.TEXT_MUTED, fontSize: 11, textAlign: 'center' },
   gameInfo:             { marginTop: 6, paddingHorizontal: 2 },
-  gameName:             { color: Colors.TEXT_PRIMARY, fontSize: 13, fontWeight: '600' },
-  gameGenres:           { color: Colors.TEXT_MUTED, fontSize: 11, marginTop: 2, marginBottom: 3 },
+  gameName:             { color: colors.TEXT_PRIMARY, fontSize: 13, fontWeight: '600' },
+  gameGenres:           { color: colors.TEXT_MUTED, fontSize: 11, marginTop: 2, marginBottom: 3 },
   gameRatingRow:        { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  gameReviews:          { color: Colors.TEXT_MUTED, fontSize: 10 },
+  gameReviews:          { color: colors.TEXT_MUTED, fontSize: 10 },
 });

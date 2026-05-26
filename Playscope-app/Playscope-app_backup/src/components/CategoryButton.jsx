@@ -1,8 +1,11 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import Colors from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
 
 export default function CategoryButton({ label, active, onPress }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   return (
     <TouchableOpacity
       style={[styles.btn, active && styles.btnActive]}
@@ -14,27 +17,27 @@ export default function CategoryButton({ label, active, onPress }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   btn: {
     paddingHorizontal: 16,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: Colors.BORDER,
-    backgroundColor: Colors.BG_CARD,
+    borderColor: colors.BORDER,
+    backgroundColor: colors.BG_CARD,
     marginRight: 8,
   },
   btnActive: {
-    backgroundColor: Colors.ACCENT,
-    borderColor: Colors.ACCENT,
+    backgroundColor: colors.ACCENT,
+    borderColor: colors.ACCENT,
   },
   label: {
-    color: Colors.TEXT_SECONDARY,
+    color: colors.TEXT_SECONDARY,
     fontSize: 12,
     fontWeight: '500',
   },
   labelActive: {
-    color: Colors.BG_PRIMARY,
+    color: colors.BG_PRIMARY,
     fontWeight: '700',
   },
 });

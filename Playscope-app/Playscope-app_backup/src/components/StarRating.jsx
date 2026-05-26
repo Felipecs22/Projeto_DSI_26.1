@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Colors from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
 
 export default function StarRating({ rating = 0, label, size = 'sm' }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const filled  = Math.floor(rating);
   const hasHalf = rating % 1 >= 0.5;
   const empty   = 5 - filled - (hasHalf ? 1 : 0);
@@ -26,23 +28,23 @@ export default function StarRating({ rating = 0, label, size = 'sm' }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   star: {
-    color: Colors.STAR,
+    color: colors.STAR,
   },
   starHalf: {
-    color: Colors.STAR,
+    color: colors.STAR,
     opacity: 0.6,
   },
   starEmpty: {
-    color: Colors.TEXT_MUTED,
+    color: colors.TEXT_MUTED,
   },
   label: {
-    color: Colors.ACCENT,
+    color: colors.ACCENT,
     fontWeight: '600',
     marginLeft: 2,
   },

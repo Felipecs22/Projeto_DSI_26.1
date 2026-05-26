@@ -8,11 +8,13 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import Colors from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
 import { STATUS_OPTIONS } from '../constants/data';
 
-export default function StatusModal({ visible, game, currentStatus, onClose, onSelect }) {
+export default function StatusModal({ visible, game, currentStatus, onClose, onSelect, onRemove }) {
   if (!game) return null;
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   return (
     <Modal
@@ -61,44 +63,55 @@ export default function StatusModal({ visible, game, currentStatus, onClose, onS
           <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
             <Text style={styles.cancelText}>Cancelar</Text>
           </TouchableOpacity>
+          {currentStatus && onRemove ? (
+            <TouchableOpacity
+              style={styles.removeBtn}
+              onPress={() => {
+                onRemove();
+                onClose();
+              }}
+            >
+              <Text style={styles.removeText}>Remover da biblioteca</Text>
+            </TouchableOpacity>
+          ) : null}
         </Pressable>
       </Pressable>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: colors.SCRIM,
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: Colors.BG_MODAL,
+    backgroundColor: colors.BG_MODAL,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
     paddingTop: 12,
     paddingBottom: 34,
     borderTopWidth: 1,
-    borderColor: Colors.BORDER,
+    borderColor: colors.BORDER,
   },
   handle: {
     width: 40,
     height: 4,
-    backgroundColor: Colors.BORDER_LIGHT,
+    backgroundColor: colors.BORDER_LIGHT,
     borderRadius: 2,
     alignSelf: 'center',
     marginBottom: 20,
   },
   title: {
-    color: Colors.TEXT_PRIMARY,
+    color: colors.TEXT_PRIMARY,
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 4,
   },
   subtitle: {
-    color: Colors.TEXT_MUTED,
+    color: colors.TEXT_MUTED,
     fontSize: 13,
     marginBottom: 16,
   },
@@ -113,24 +126,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.BORDER,
+    borderColor: colors.BORDER,
     marginBottom: 8,
-    backgroundColor: Colors.BG_CARD,
+    backgroundColor: colors.BG_CARD,
   },
   optionActive: {
-    borderColor: Colors.ACCENT,
+    borderColor: colors.ACCENT,
     backgroundColor: 'rgba(0,211,148,0.08)',
   },
   optionText: {
-    color: Colors.TEXT_SECONDARY,
+    color: colors.TEXT_SECONDARY,
     fontSize: 15,
   },
   optionTextActive: {
-    color: Colors.ACCENT,
+    color: colors.ACCENT,
     fontWeight: '700',
   },
   checkmark: {
-    color: Colors.ACCENT,
+    color: colors.ACCENT,
     fontSize: 16,
     fontWeight: '700',
   },
@@ -139,11 +152,24 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.BORDER,
+    borderColor: colors.BORDER,
     alignItems: 'center',
   },
   cancelText: {
-    color: Colors.TEXT_MUTED,
+    color: colors.TEXT_MUTED,
     fontSize: 15,
+  },
+  removeBtn: {
+    marginTop: 10,
+    paddingVertical: 13,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.DANGER,
+    alignItems: 'center',
+  },
+  removeText: {
+    color: colors.DANGER,
+    fontSize: 15,
+    fontWeight: '600',
   },
 });

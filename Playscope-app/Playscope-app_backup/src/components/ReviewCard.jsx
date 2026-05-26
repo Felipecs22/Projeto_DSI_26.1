@@ -1,17 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Colors from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
 import StarRating from './StarRating';
 
 export default function ReviewCard({ review }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user, game, rating, ratingLabel, text, online } = review;
 
   return (
     <View style={styles.card}>
       {/* Avatar */}
-      <View style={[styles.avatar, { borderColor: online ? Colors.ONLINE : Colors.BORDER }]}>
+      <View style={[styles.avatar, { borderColor: online ? colors.ONLINE : colors.BORDER }]}>
         <Text style={styles.avatarIcon}>👤</Text>
-        <View style={[styles.onlineDot, { backgroundColor: online ? Colors.ONLINE : Colors.OFFLINE }]} />
+        <View style={[styles.onlineDot, { backgroundColor: online ? colors.ONLINE : colors.OFFLINE }]} />
       </View>
 
       {/* Content */}
@@ -29,23 +31,23 @@ export default function ReviewCard({ review }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: Colors.BG_CARD,
+    backgroundColor: colors.BG_CARD,
     borderRadius: 12,
     padding: 12,
     marginHorizontal: 16,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: Colors.BORDER,
+    borderColor: colors.BORDER,
     gap: 10,
   },
   avatar: {
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: Colors.BG_INPUT,
+    backgroundColor: colors.BG_INPUT,
     borderWidth: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
     bottom: -1,
     right: -1,
     borderWidth: 2,
-    borderColor: Colors.BG_CARD,
+    borderColor: colors.BG_CARD,
   },
   content: {
     flex: 1,
@@ -76,17 +78,17 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   username: {
-    color: Colors.TEXT_PRIMARY,
+    color: colors.TEXT_PRIMARY,
     fontSize: 13,
     fontWeight: '600',
     flex: 1,
   },
   gameName: {
-    color: Colors.ACCENT,
+    color: colors.ACCENT,
     fontWeight: '400',
   },
   text: {
-    color: Colors.TEXT_SECONDARY,
+    color: colors.TEXT_SECONDARY,
     fontSize: 12,
     lineHeight: 18,
   },

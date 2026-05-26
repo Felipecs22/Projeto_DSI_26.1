@@ -39,7 +39,7 @@ export const trendingGames = [
   },
 ];
 
-export const gameTags = ['Exploração', 'RPG', 'Aventura', 'FPS', 'TPS', 'Estratégia', 'MMO', 'Puzzle', 'Indie'];
+export const gameTags = ['RPG', 'FPS', 'Horror', 'Indie', 'Aventura', 'Exploração', 'Estratégia', 'Puzzle', 'Simulação'];
 
 export const allGames = [
   { id: '5',  name: 'Commandos: Behind Enemy Lines', genres: 'Estratégia, Puzzle',        status: 'jogado',      image: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1p2q.jpg' },
@@ -138,12 +138,6 @@ export const STATUS_CONFIG = {
     icon: '📚',
     color: '#8A99A8',
   },
-  jogado: {
-    label: 'Jogado',
-    subtitle: 'Sua biblioteca pessoal.',
-    icon: '🎮',
-    color: '#8A99A8',
-  },
   jogados: {
     label: 'Concluídos',
     subtitle: 'Na estante de troféus.',
@@ -182,5 +176,4 @@ export const STATUS_OPTIONS = [
   { value: 'pausados',   label: '⏸️  Pausado'    },
   { value: 'abandonados',label: '🚫  Abandonado' },
   { value: 'fila',       label: '⏳  Na fila'    },
-  { value: 'jogado',     label: '🎮  Quero jogar' },
 ];

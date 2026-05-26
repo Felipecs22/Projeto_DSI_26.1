@@ -2,7 +2,7 @@ import { BaseRepository } from './BaseRepository';
 import { UserGame, type GameStatus } from '../models/UserGame';
 
 export class LibraryRepository extends BaseRepository<UserGame> {
-  protected collectionName = 'library';
+  protected collectionName = 'userGames';
 
   protected toModel(data: Record<string, any>): UserGame {
     return UserGame.fromJSON(data);
@@ -45,5 +45,9 @@ export class LibraryRepository extends BaseRepository<UserGame> {
     const docId = `${userId}_${gameId}`;
     const result = await this.findById(docId);
     return result !== null;
+  }
+
+  async findUserGame(userId: string, gameId: string): Promise<UserGame | null> {
+    return this.findById(`${userId}_${gameId}`);
   }
 }

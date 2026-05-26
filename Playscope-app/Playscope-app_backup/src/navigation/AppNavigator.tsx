@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { useAuth } from '../context/AuthContext';
-import Colors from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
 
 import LoginScreen     from '../screens/LoginScreen';
 import RegisterScreen  from '../screens/RegisterScreen';
@@ -21,22 +21,25 @@ const Tab   = createBottomTabNavigator();
 
 /* ─── Splash de carregamento ─────────────────────────────────────────────── */
 function LoadingScreen() {
+  const { colors } = useTheme();
+  const styles = createLoadStyles(colors);
+
   return (
-    <View style={loadStyles.container}>
-      <Text style={loadStyles.logo}>
-        <Text style={loadStyles.logoPlay}>Play</Text>
-        <Text style={loadStyles.logoScope}>scope</Text>
+    <View style={styles.container}>
+      <Text style={styles.logo}>
+        <Text style={styles.logoPlay}>Play</Text>
+        <Text style={styles.logoScope}>scope</Text>
       </Text>
-      <ActivityIndicator color={Colors.ACCENT} size="large" style={{ marginTop: 32 }} />
+      <ActivityIndicator color={colors.ACCENT} size="large" style={{ marginTop: 32 }} />
     </View>
   );
 }
 
-const loadStyles = StyleSheet.create({
-  container:  { flex: 1, backgroundColor: Colors.BG_PRIMARY, justifyContent: 'center', alignItems: 'center' },
+const createLoadStyles = (colors: any) => StyleSheet.create({
+  container:  { flex: 1, backgroundColor: colors.BG_PRIMARY, justifyContent: 'center', alignItems: 'center' },
   logo:       { fontSize: 40 },
-  logoPlay:   { color: Colors.TEXT_PRIMARY, fontWeight: '700' },
-  logoScope:  { color: Colors.ACCENT,       fontWeight: '700' },
+  logoPlay:   { color: colors.TEXT_PRIMARY, fontWeight: '700' },
+  logoScope:  { color: colors.ACCENT,       fontWeight: '700' },
 });
 
 /* ─── Tab icon ───────────────────────────────────────────────────────────── */
@@ -56,20 +59,23 @@ const tabStyles = StyleSheet.create({
 
 /* ─── Bottom Tabs ────────────────────────────────────────────────────────── */
 function MainTabs() {
+  const { colors } = useTheme();
+
   return (
     <Tab.Navigator
+      id="main-tabs"
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: Colors.BG_PRIMARY,
-          borderTopColor:  Colors.BORDER,
+          backgroundColor: colors.BG_PRIMARY,
+          borderTopColor:  colors.BORDER,
           borderTopWidth:  1,
           height:          68,
           paddingBottom:   10,
           paddingTop:      6,
         },
-        tabBarActiveTintColor:   Colors.ACCENT,
-        tabBarInactiveTintColor: Colors.TEXT_MUTED,
+        tabBarActiveTintColor:   colors.ACCENT,
+        tabBarInactiveTintColor: colors.TEXT_MUTED,
         tabBarLabelStyle: { fontSize: 10, fontWeight: '600', marginTop: 2 },
       }}
     >
@@ -86,12 +92,13 @@ function MainTabs() {
 /* ─── Root Navigator ─────────────────────────────────────────────────────── */
 export default function AppNavigator() {
   const { user, loading } = useAuth();
+  const { navigationTheme, ready } = useTheme();
 
   // Aguarda Firebase verificar o estado de autenticação
-  if (loading) {
+  if (loading || !ready) {
     return (
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <NavigationContainer theme={navigationTheme}>
+        <Stack.Navigator id="loading-stack" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Loading" component={LoadingScreen} />
         </Stack.Navigator>
       </NavigationContainer>
@@ -99,8 +106,9 @@ export default function AppNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navigationTheme}>
       <Stack.Navigator
+        id="root-stack"
         // Se já autenticado, abre direto nas tabs; senão, vai para Login
         initialRouteName={user ? 'MainTabs' : 'Login'}
         screenOptions={{ headerShown: false, animation: 'fade' }}

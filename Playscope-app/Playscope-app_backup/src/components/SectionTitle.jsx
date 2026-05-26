@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Colors from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
 
-export default function SectionTitle({ title, subtitle, rightElement }) {
+export default function SectionTitle({ title, subtitle = undefined, rightElement = undefined }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
       <View style={styles.textGroup}>
@@ -14,7 +17,7 @@ export default function SectionTitle({ title, subtitle, rightElement }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -26,13 +29,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    color: Colors.TEXT_PRIMARY,
+    color: colors.TEXT_PRIMARY,
     fontSize: 22,
     fontWeight: '700',
     letterSpacing: 0.3,
   },
   subtitle: {
-    color: Colors.ACCENT,
+    color: colors.ACCENT,
     fontSize: 12,
     marginTop: 2,
     fontWeight: '400',

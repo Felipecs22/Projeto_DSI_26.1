@@ -15,7 +15,6 @@ export class User {
   preferences: {
     notifications: boolean;
     darkMode: boolean;
-    hideSpoilers: boolean;
     publicActivity: boolean;
     publicLibrary: boolean;
   };
@@ -42,7 +41,6 @@ export class User {
     this.preferences = {
       notifications:  true,
       darkMode:       true,
-      hideSpoilers:   false,
       publicActivity: true,
       publicLibrary:  true,
       ...(data.preferences ?? {}),
@@ -74,6 +72,6 @@ export class User {
   }
 
   static fromJSON(data: Record<string, any>): User {
-    return new User(data);
+    return new User(data as any);
   }
 }

@@ -23,7 +23,6 @@ const firebaseConfig = {
   apiKey:            'SUA_API_KEY',
   authDomain:        'seu-projeto.firebaseapp.com',
   projectId:         'seu-projeto',
-  storageBucket:     'seu-projeto.appspot.com',
   messagingSenderId: 'SEU_SENDER_ID',
   appId:             'SEU_APP_ID',
 };
@@ -40,13 +39,7 @@ const firebaseConfig = {
 2. Selecione **Modo de teste** (regras abertas por 30 dias)
 3. Escolha a região mais próxima (ex: `southamerica-east1`)
 
-## 6. Ativar Firebase Storage
-
-1. Firebase Console → **Storage** → **Começar**
-2. Aceite as regras padrão em modo de teste
-3. Escolha a mesma região do Firestore
-
-## 7. Regras de segurança (produção futura)
+## 6. Regras de segurança (produção futura)
 
 ### Firestore
 ```
@@ -56,8 +49,10 @@ service cloud.firestore {
     match /users/{uid} {
       allow read, write: if request.auth.uid == uid;
     }
-    match /library/{doc} {
-      allow read, write: if request.auth != null &&
+    match /userGames/{doc} {
+      allow create: if request.auth != null &&
+        request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if request.auth != null &&
         resource.data.userId == request.auth.uid;
     }
     match /reviews/{doc} {
@@ -69,24 +64,11 @@ service cloud.firestore {
 }
 ```
 
-### Storage
-```
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /users/{userId}/{allPaths=**} {
-      allow read, write: if request.auth.uid == userId;
-    }
-  }
-}
-```
-
-## 8. Instalar dependências e rodar
+## 7. Instalar dependências e rodar
 
 ```bash
 npm install
 npx expo start
 ```
 
-> **Sem Firebase configurado?** Use o botão
-> `⚙️ Entrar sem Firebase (dev)` na tela de Login para testar a UI.
+> O app agora depende de Authentication + Firestore configurados para login, biblioteca, reviews e preferências.

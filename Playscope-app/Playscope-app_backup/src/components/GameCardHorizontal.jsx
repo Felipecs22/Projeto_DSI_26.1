@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import Colors from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
 import StarRating from './StarRating';
 
-export default function GameCardHorizontal({ game, onPress, onWant, style }) {
+export default function GameCardHorizontal({ game, onPress = undefined, onWant = undefined, style = undefined }) {
   const [imgError, setImgError] = useState(false);
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   return (
     <TouchableOpacity
@@ -63,20 +65,20 @@ export default function GameCardHorizontal({ game, onPress, onWant, style }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   card: {
     width: 200,
     marginRight: 14,
-    backgroundColor: Colors.BG_CARD,
+    backgroundColor: colors.BG_CARD,
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: Colors.BORDER,
+    borderColor: colors.BORDER,
   },
   thumb: {
     width: '100%',
     height: 220,
-    backgroundColor: Colors.BG_INPUT,
+    backgroundColor: colors.BG_INPUT,
     position: 'relative',
   },
   image: {
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   placeholderText: {
-    color: Colors.TEXT_MUTED,
+    color: colors.TEXT_MUTED,
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
@@ -100,13 +102,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(8,12,20,0.82)',
+    backgroundColor: colors.SURFACE_TINT,
     padding: 10,
   },
   overlayText: {
-    color: 'rgba(255,255,255,0.8)',
+    color: colors.WHITE,
     fontSize: 10,
     lineHeight: 15,
+    opacity: 0.8,
   },
   footer: {
     padding: 10,
@@ -119,24 +122,24 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   name: {
-    color: Colors.TEXT_PRIMARY,
+    color: colors.TEXT_PRIMARY,
     fontSize: 13,
     fontWeight: '700',
   },
   genres: {
-    color: Colors.TEXT_MUTED,
+    color: colors.TEXT_MUTED,
     fontSize: 11,
     marginTop: 2,
     marginBottom: 3,
   },
   wantBtn: {
-    backgroundColor: Colors.ACCENT,
+    backgroundColor: colors.ACCENT,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
   },
   wantBtnText: {
-    color: Colors.BG_PRIMARY,
+    color: colors.BG_PRIMARY,
     fontSize: 11,
     fontWeight: '700',
   },

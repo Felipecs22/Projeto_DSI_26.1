@@ -7,14 +7,16 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import Colors from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
 import StarRating from './StarRating';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 16 * 2 - 12) / 2; // 2 cols with padding + gap
 
-export default function GameCard({ game, onPress, showRating = false, showWantBtn = false, onWant }) {
+export default function GameCard({ game, onPress = undefined, showRating = false, showWantBtn = false, onWant = undefined }) {
   const [imgError, setImgError] = useState(false);
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   return (
     <TouchableOpacity style={styles.card} onPress={() => onPress && onPress(game)} activeOpacity={0.85}>
@@ -56,7 +58,7 @@ export default function GameCard({ game, onPress, showRating = false, showWantBt
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   card: {
     width: CARD_WIDTH,
     marginBottom: 16,
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
     aspectRatio: 3 / 4,
     borderRadius: 10,
     overflow: 'hidden',
-    backgroundColor: Colors.BG_CARD,
+    backgroundColor: colors.BG_CARD,
   },
   image: {
     width: '100%',
@@ -77,10 +79,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 8,
-    backgroundColor: Colors.BG_CARD,
+    backgroundColor: colors.BG_CARD,
   },
   placeholderText: {
-    color: Colors.TEXT_MUTED,
+    color: colors.TEXT_MUTED,
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
@@ -90,13 +92,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   name: {
-    color: Colors.TEXT_PRIMARY,
+    color: colors.TEXT_PRIMARY,
     fontSize: 13,
     fontWeight: '600',
     lineHeight: 18,
   },
   genres: {
-    color: Colors.TEXT_MUTED,
+    color: colors.TEXT_MUTED,
     fontSize: 11,
     marginTop: 2,
   },
@@ -106,13 +108,13 @@ const styles = StyleSheet.create({
   wantBtn: {
     marginTop: 6,
     alignSelf: 'flex-start',
-    backgroundColor: Colors.ACCENT,
+    backgroundColor: colors.ACCENT,
     paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 12,
   },
   wantBtnText: {
-    color: Colors.BG_PRIMARY,
+    color: colors.BG_PRIMARY,
     fontSize: 11,
     fontWeight: '700',
   },

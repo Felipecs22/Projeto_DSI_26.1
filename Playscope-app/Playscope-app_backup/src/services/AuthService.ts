@@ -4,19 +4,25 @@
 
 import {
   createUserWithEmailAndPassword,
+  deleteUser,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   updateProfile,
   type User as FirebaseUser,
 } from 'firebase/auth';
 import { auth } from './firebase.config';
 import { User } from '../models/User';
 import { UserRepository } from '../repositories/UserRepository';
+import { LibraryService } from './LibraryService';
+import { ReviewService } from './ReviewService';
 
 export class AuthService {
   private static instance: AuthService;
   private userRepo = new UserRepository();
+  private libraryService = LibraryService.getInstance();
+  private reviewService = ReviewService.getInstance();
 
   /** Singleton */
   static getInstance(): AuthService {
@@ -45,7 +51,7 @@ export class AuthService {
         createdAt:   new Date().toISOString(),
       });
 
-      await this.userRepo.save(user);
+      await this.userRepo.saveUser(user);
       return user;
     } catch (error: any) {
       throw this.mapError(error);
@@ -68,7 +74,7 @@ export class AuthService {
         displayName: cred.user.displayName ?? '',
         email:       cred.user.email       ?? email,
       });
-      await this.userRepo.save(user);
+      await this.userRepo.saveUser(user);
       return user;
     } catch (error: any) {
       throw this.mapError(error);
@@ -80,6 +86,23 @@ export class AuthService {
    */
   async logout(): Promise<void> {
     await signOut(auth);
+  }
+
+  async sendPasswordReset(email: string): Promise<void> {
+    await sendPasswordResetEmail(auth, email);
+  }
+
+  async deleteCurrentAccount(): Promise<void> {
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+      throw new Error('Nenhum usuário autenticado.');
+    }
+
+    await this.libraryService.clearUserLibrary(currentUser.uid);
+    await this.reviewService.deleteUserReviews(currentUser.uid);
+    await this.userRepo.delete(currentUser.uid);
+    await deleteUser(currentUser);
   }
 
   /**
@@ -106,6 +129,7 @@ export class AuthService {
       'auth/invalid-credential':      'E-mail ou senha incorretos.',
       'auth/too-many-requests':       'Muitas tentativas. Tente novamente mais tarde.',
       'auth/network-request-failed':  'Erro de conexão. Verifique sua internet.',
+      'auth/requires-recent-login':   'Faça login novamente para concluir esta ação.',
     };
     return new Error(messages[code] ?? error?.message ?? 'Erro desconhecido.');
   }

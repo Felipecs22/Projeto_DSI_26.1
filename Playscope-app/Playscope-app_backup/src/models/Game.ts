@@ -15,6 +15,8 @@ export class Game {
   readonly steamRating: string;
   readonly releaseDate: string;
   readonly image: string;
+  readonly description: string;
+  readonly tags: string[];
   status: string | null;
 
   constructor(data: {
@@ -30,6 +32,8 @@ export class Game {
     steamRating: string;
     releaseDate: string;
     image: string;
+    description?: string;
+    tags?: string[];
     status?: string | null;
   }) {
     this.id          = data.id;
@@ -44,6 +48,8 @@ export class Game {
     this.steamRating = data.steamRating;
     this.releaseDate = data.releaseDate;
     this.image       = data.image;
+    this.description = data.description ?? '';
+    this.tags        = data.tags ?? [];
     this.status      = data.status ?? null;
   }
 
@@ -69,6 +75,10 @@ export class Game {
     return String(this.reviews);
   }
 
+  get tagLabel(): string {
+    return this.tags.join(' • ');
+  }
+
   /** Serializa para objeto plano (ex: salvar no Firestore) */
   toJSON(): Record<string, unknown> {
     return {
@@ -84,6 +94,8 @@ export class Game {
       steamRating: this.steamRating,
       releaseDate: this.releaseDate,
       image:       this.image,
+      description: this.description,
+      tags:        this.tags,
       status:      this.status,
     };
   }
@@ -103,6 +115,8 @@ export class Game {
       steamRating: data.steamRating ?? '',
       releaseDate: data.releaseDate ?? '',
       image:       data.image       ?? '',
+      description: data.description ?? '',
+      tags:        data.tags        ?? [],
       status:      data.status      ?? null,
     });
   }

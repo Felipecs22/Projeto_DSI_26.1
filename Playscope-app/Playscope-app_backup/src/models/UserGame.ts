@@ -2,7 +2,7 @@
  * UserGame — relação entre usuário e jogo (status na biblioteca).
  */
 
-export type GameStatus = 'jogando' | 'jogados' | 'pausados' | 'abandonados' | 'fila' | 'jogado';
+export type GameStatus = 'jogando' | 'jogados' | 'pausados' | 'abandonados' | 'fila';
 
 export class UserGame {
   readonly id: string;          // Firestore doc id (== gameId para simplicidade)
@@ -52,6 +52,6 @@ export class UserGame {
   }
 
   static fromJSON(data: Record<string, any>): UserGame {
-    return new UserGame(data);
+    return new UserGame(data as any);
   }
 }

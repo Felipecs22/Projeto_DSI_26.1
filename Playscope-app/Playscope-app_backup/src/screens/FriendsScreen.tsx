@@ -8,12 +8,14 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import Colors from '../constants/colors';
 import { friendsList, friendReviews, feedItems } from '../constants/data';
 import SectionTitle from '../components/SectionTitle';
 import ReviewCard from '../components/ReviewCard';
+import { useTheme } from '../context/ThemeContext';
 
 function FriendItem({ friend }: { friend: any }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   return (
     <TouchableOpacity style={styles.friendItem} activeOpacity={0.75}>
       <View style={styles.friendAvatar}>
@@ -21,7 +23,7 @@ function FriendItem({ friend }: { friend: any }) {
         <View
           style={[
             styles.onlineDot,
-            { backgroundColor: friend.online ? Colors.ONLINE : Colors.OFFLINE },
+            { backgroundColor: friend.online ? colors.ONLINE : colors.OFFLINE },
           ]}
         />
       </View>
@@ -31,6 +33,8 @@ function FriendItem({ friend }: { friend: any }) {
 }
 
 function FeedItem({ item }: { item: any }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.feedItem}>
       <View style={styles.feedDot} />
@@ -44,9 +48,12 @@ function FeedItem({ item }: { item: any }) {
 }
 
 export default function FriendsScreen() {
+  const { colors, darkMode } = useTheme();
+  const styles = createStyles(colors);
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.BG_PRIMARY} />
+      <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} backgroundColor={colors.BG_PRIMARY} />
 
       <ScrollView showsVerticalScrollIndicator={false}>
 
@@ -84,10 +91,10 @@ export default function FriendsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.BG_PRIMARY,
+    backgroundColor: colors.BG_PRIMARY,
   },
   section: {
     marginTop: 20,
@@ -96,10 +103,10 @@ const styles = StyleSheet.create({
   // Friend item
   friendsCard: {
     marginHorizontal: 16,
-    backgroundColor: Colors.BG_CARD,
+    backgroundColor: colors.BG_CARD,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.BORDER,
+    borderColor: colors.BORDER,
     overflow: 'hidden',
   },
   friendItem: {
@@ -109,15 +116,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 13,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.BORDER,
+    borderBottomColor: colors.BORDER,
   },
   friendAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.BG_INPUT,
+    backgroundColor: colors.BG_INPUT,
     borderWidth: 1.5,
-    borderColor: Colors.BORDER,
+    borderColor: colors.BORDER,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -133,10 +140,10 @@ const styles = StyleSheet.create({
     bottom: -1,
     right: -1,
     borderWidth: 2,
-    borderColor: Colors.BG_CARD,
+    borderColor: colors.BG_CARD,
   },
   friendName: {
-    color: Colors.TEXT_PRIMARY,
+    color: colors.TEXT_PRIMARY,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -144,10 +151,10 @@ const styles = StyleSheet.create({
   // Feed
   feedCard: {
     marginHorizontal: 16,
-    backgroundColor: Colors.BG_CARD,
+    backgroundColor: colors.BG_CARD,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.BORDER,
+    borderColor: colors.BORDER,
     overflow: 'hidden',
   },
   feedItem: {
@@ -157,26 +164,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.BORDER,
+    borderBottomColor: colors.BORDER,
   },
   feedDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.ACCENT,
+    backgroundColor: colors.ACCENT,
     flexShrink: 0,
   },
   feedText: {
-    color: Colors.TEXT_SECONDARY,
+    color: colors.TEXT_SECONDARY,
     fontSize: 13,
     flex: 1,
   },
   feedUser: {
-    color: Colors.TEXT_PRIMARY,
+    color: colors.TEXT_PRIMARY,
     fontWeight: '700',
   },
   feedGame: {
-    color: Colors.ACCENT,
+    color: colors.ACCENT,
     fontWeight: '600',
   },
 });

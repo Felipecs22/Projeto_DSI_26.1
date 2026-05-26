@@ -9,7 +9,7 @@ export class UserRepository extends BaseRepository<User> {
   }
 
   /** Salva o perfil completo do usuário */
-  async save(user: User): Promise<void> {
+  async saveUser(user: User): Promise<void> {
     await super.save(user.uid, user.toJSON());
   }
 
@@ -19,6 +19,7 @@ export class UserRepository extends BaseRepository<User> {
     fields: {
       displayName?: string;
       username?: string;
+      email?: string;
       bio?: string;
       avatarId?: string | null;
       photoURL?: string | null;
