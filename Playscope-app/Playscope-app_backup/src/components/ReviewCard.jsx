@@ -7,13 +7,16 @@ export default function ReviewCard({ review }) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
   const { user, game, rating, ratingLabel, text, online } = review;
+  const showPresence = typeof online === 'boolean';
 
   return (
     <View style={styles.card}>
       {/* Avatar */}
-      <View style={[styles.avatar, { borderColor: online ? colors.ONLINE : colors.BORDER }]}>
+      <View style={[styles.avatar, { borderColor: showPresence && online ? colors.ONLINE : colors.BORDER }]}>
         <Text style={styles.avatarIcon}>👤</Text>
-        <View style={[styles.onlineDot, { backgroundColor: online ? colors.ONLINE : colors.OFFLINE }]} />
+        {showPresence ? (
+          <View style={[styles.onlineDot, { backgroundColor: online ? colors.ONLINE : colors.OFFLINE }]} />
+        ) : null}
       </View>
 
       {/* Content */}

@@ -105,6 +105,7 @@ export default function ProfileScreen() {
   const [editModal, setEditModal] = useState<{ field: string; label: string; value: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [loadingStats, setLoadingStats] = useState(false);
+  const [refreshingProfile, setRefreshingProfile] = useState(false);
 
   const [displayName, setDisplayName] = useState(user?.displayName ?? 'Jogador');
   const [username, setUsername] = useState(user?.username ?? '@jogador');
@@ -179,6 +180,18 @@ export default function ProfileScreen() {
       );
     } finally {
       setLoadingStats(false);
+    }
+  };
+
+  const handleRefreshProfile = async () => {
+    if (!user) return;
+
+    setRefreshingProfile(true);
+    try {
+      await refreshUser();
+      await loadProfileData();
+    } finally {
+      setRefreshingProfile(false);
     }
   };
 
@@ -281,6 +294,13 @@ export default function ProfileScreen() {
             ) : (
               <ProfileAvatar avatarId={avatarId} size={90} />
             )}
+            <TouchableOpacity style={styles.refreshBtn} onPress={handleRefreshProfile} disabled={refreshingProfile}>
+              {refreshingProfile ? (
+                <ActivityIndicator color={colors.ACCENT} size="small" />
+              ) : (
+                <Text style={styles.refreshIcon}>↻</Text>
+              )}
+            </TouchableOpacity>
             <TouchableOpacity style={styles.avatarEditBtn} onPress={() => setAvatarPickerVisible(true)}>
               <Text style={styles.avatarEditIcon}>✏️</Text>
             </TouchableOpacity>
@@ -486,6 +506,24 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
   },
   avatarEditIcon: { fontSize: 12 },
+  refreshBtn: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.BG_CARD,
+    borderWidth: 1.5,
+    borderColor: colors.BORDER,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  refreshIcon: {
+    color: colors.ACCENT,
+    fontSize: 15,
+    fontWeight: '700',
+  },
   heroName: { color: colors.TEXT_PRIMARY, fontSize: 22, fontWeight: '700', marginBottom: 2 },
   heroUsername: { color: colors.ACCENT, fontSize: 14, marginBottom: 4 },
   heroSince: { color: colors.TEXT_MUTED, fontSize: 12, marginBottom: 16 },

@@ -47,7 +47,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{uid} {
-      allow read, write: if request.auth.uid == uid;
+      allow read: if request.auth != null;
+      allow write: if request.auth.uid == uid;
     }
     match /userGames/{doc} {
       allow create: if request.auth != null &&
@@ -60,6 +61,13 @@ service cloud.firestore {
       allow write: if request.auth != null &&
         request.resource.data.userId == request.auth.uid;
     }
+    match /friendRelations/{doc} {
+      allow create: if request.auth != null &&
+        request.resource.data.requestedBy == request.auth.uid &&
+        request.auth.uid in request.resource.data.memberIds;
+      allow read, update, delete: if request.auth != null &&
+        request.auth.uid in resource.data.memberIds;
+    }
   }
 }
 ```
@@ -71,4 +79,4 @@ npm install
 npx expo start
 ```
 
-> O app agora depende de Authentication + Firestore configurados para login, biblioteca, reviews e preferências.
+> O app agora depende de Authentication + Firestore configurados para login, biblioteca, reviews, preferências e amigos.

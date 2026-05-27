@@ -5,6 +5,7 @@ export class User {
   readonly uid: string;
   displayName: string;
   username: string;
+  usernameLower: string;
   email: string;
   bio: string;
   avatarId: string | null;       // 'ninja' | 'robot' | 'cowboy' | null
@@ -23,6 +24,7 @@ export class User {
     uid: string;
     displayName?: string;
     username?: string;
+    usernameLower?: string;
     email?: string;
     bio?: string;
     avatarId?: string | null;
@@ -32,7 +34,8 @@ export class User {
   }) {
     this.uid         = data.uid;
     this.displayName = data.displayName ?? 'Jogador';
-    this.username    = data.username    ?? '@jogador';
+    this.username    = User.normalizeUsername(data.username ?? '@jogador');
+    this.usernameLower = data.usernameLower ?? this.username.toLowerCase();
     this.email       = data.email       ?? '';
     this.bio         = data.bio         ?? '';
     this.avatarId    = data.avatarId    ?? null;
@@ -57,11 +60,18 @@ export class User {
       .slice(0, 2);
   }
 
+  static normalizeUsername(username: string): string {
+    const trimmed = username.trim();
+    if (!trimmed) return '@jogador';
+    return trimmed.startsWith('@') ? trimmed : `@${trimmed}`;
+  }
+
   toJSON(): Record<string, unknown> {
     return {
       uid:         this.uid,
       displayName: this.displayName,
       username:    this.username,
+      usernameLower: this.usernameLower,
       email:       this.email,
       bio:         this.bio,
       avatarId:    this.avatarId,

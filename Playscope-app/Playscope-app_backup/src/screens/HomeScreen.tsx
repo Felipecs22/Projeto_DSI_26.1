@@ -254,10 +254,6 @@ export default function HomeScreen({ navigation }: any) {
             />
           </View>
 
-          <View style={styles.statsBar}>
-            <Text style={styles.statsText}>🎮 {gameService.count} jogos no catálogo</Text>
-          </View>
-
           <View style={styles.tagsArea}>
             <TouchableOpacity style={styles.tagsBtn} onPress={() => setTagsVisible(true)}>
               <Text style={styles.tagsBtnText}>
@@ -342,8 +338,6 @@ const createStyles = (colors: any) => StyleSheet.create({
   profileIcon: { fontSize: 16 },
   section: { marginTop: 20 },
   carousel: { paddingLeft: 16, paddingRight: 8 },
-  statsBar: { marginTop: 16, alignItems: 'center' },
-  statsText: { color: colors.TEXT_MUTED, fontSize: 12 },
   tagsArea: { marginTop: 12, alignItems: 'center' },
   tagsBtn: {
     borderWidth: 1.5,

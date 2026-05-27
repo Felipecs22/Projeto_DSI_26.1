@@ -31,9 +31,9 @@ npx expo start
 
 ```
 src/
-├── models/           # Classes: Game, User, Review, UserGame
-├── services/         # AuthService, GameService, LibraryService, ReviewService
-├── repositories/     # BaseRepository, UserRepo, LibraryRepo, ReviewRepo
+├── models/           # Classes: Game, User, Review, UserGame, FriendRelation
+├── services/         # AuthService, GameService, LibraryService, ReviewService, FriendService
+├── repositories/     # BaseRepository, UserRepo, LibraryRepo, ReviewRepo, FriendRepo
 ├── context/          # AuthContext + ThemeContext
 ├── data/             # games_data.json (600 jogos Steam reais)
 ├── constants/        # colors.js, data.js (tags etc.)
@@ -53,6 +53,5 @@ src/
 | Home | Catálogo local, busca em tempo real, filtro por tags, detalhes e reviews |
 | Meus Jogos | Biblioteca Firestore, CRUD real e filtros por status |
 | Comunidade | Reviews e jogos populares |
-| Amigos | Feed de atividade |
-| Novidades | Últimas notícias |
+| Amigos | Convites, lista real de amigos e reviews dos amigos |
 | Perfil | Avatar (Ninja/Robô/Cowboy), preferências persistidas e stats reais |

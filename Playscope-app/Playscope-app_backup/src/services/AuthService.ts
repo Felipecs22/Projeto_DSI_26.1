@@ -15,12 +15,14 @@ import {
 import { auth } from './firebase.config';
 import { User } from '../models/User';
 import { UserRepository } from '../repositories/UserRepository';
+import { FriendService } from './FriendService';
 import { LibraryService } from './LibraryService';
 import { ReviewService } from './ReviewService';
 
 export class AuthService {
   private static instance: AuthService;
   private userRepo = new UserRepository();
+  private friendService = FriendService.getInstance();
   private libraryService = LibraryService.getInstance();
   private reviewService = ReviewService.getInstance();
 
@@ -66,7 +68,10 @@ export class AuthService {
       const cred     = await signInWithEmailAndPassword(auth, email, password);
       const existing = await this.userRepo.findById(cred.user.uid);
 
-      if (existing) return existing;
+      if (existing) {
+        await this.userRepo.saveUser(existing);
+        return existing;
+      }
 
       // Cria perfil caso não exista ainda (migração)
       const user = new User({
@@ -101,6 +106,7 @@ export class AuthService {
 
     await this.libraryService.clearUserLibrary(currentUser.uid);
     await this.reviewService.deleteUserReviews(currentUser.uid);
+    await this.friendService.clearUserRelations(currentUser.uid);
     await this.userRepo.delete(currentUser.uid);
     await deleteUser(currentUser);
   }

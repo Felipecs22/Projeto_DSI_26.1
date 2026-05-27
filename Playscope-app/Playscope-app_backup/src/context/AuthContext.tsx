@@ -40,6 +40,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsub = authService.onAuthChanged(async (fbUser) => {
       if (fbUser) {
         const profile = await userRepo.findById(fbUser.uid);
+        if (profile) {
+          await userRepo.saveUser(profile);
+        }
         setUser(profile);
       } else {
         setUser(null);

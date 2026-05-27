@@ -31,7 +31,7 @@ const FILTERS = [
 ];
 
 const STATUS_SUBTITLES: Record<string, string> = {
-  todos: 'Sua biblioteca pessoal sincronizada com o Firebase.',
+  todos: 'Sua biblioteca pessoal de jogos',
   jogados: 'Na estante de troféus.',
   jogando: 'Vivendo a jornada.',
   pausados: 'Volto já! (Algum dia)',

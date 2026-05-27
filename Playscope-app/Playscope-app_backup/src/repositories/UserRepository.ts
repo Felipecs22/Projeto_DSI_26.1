@@ -13,6 +13,35 @@ export class UserRepository extends BaseRepository<User> {
     await super.save(user.uid, user.toJSON());
   }
 
+  async findByUsername(username: string): Promise<User | null> {
+    const normalized = User.normalizeUsername(username);
+    const usernameLower = normalized.toLowerCase();
+    const rawTrimmed = username.trim();
+    const rawWithoutAt = rawTrimmed.replace(/^@/, '');
+
+    const users = await this.findWhere('usernameLower', '==', usernameLower);
+    if (users[0]) return users[0];
+
+    const exactNormalized = await this.findWhere('username', '==', normalized);
+    if (exactNormalized[0]) return exactNormalized[0];
+
+    if (rawTrimmed && rawTrimmed !== normalized) {
+      const rawMatches = await this.findWhere('username', '==', rawTrimmed);
+      if (rawMatches[0]) return rawMatches[0];
+    }
+
+    if (rawWithoutAt && rawWithoutAt !== rawTrimmed) {
+      const noAtMatches = await this.findWhere('username', '==', rawWithoutAt);
+      if (noAtMatches[0]) return noAtMatches[0];
+    }
+
+    const allUsers = await this.findAll();
+    return allUsers.find((user) => {
+      const normalizedUser = User.normalizeUsername(user.username).toLowerCase();
+      return normalizedUser === usernameLower;
+    }) ?? null;
+  }
+
   /** Atualiza campos específicos do perfil */
   async updateProfile(
     uid: string,
@@ -25,7 +54,14 @@ export class UserRepository extends BaseRepository<User> {
       photoURL?: string | null;
     },
   ): Promise<void> {
-    await super.update(uid, fields as any);
+    const payload: Record<string, unknown> = { ...fields };
+
+    if (fields.username) {
+      payload.username = User.normalizeUsername(fields.username);
+      payload.usernameLower = User.normalizeUsername(fields.username).toLowerCase();
+    }
+
+    await super.update(uid, payload as any);
   }
 
   /** Atualiza preferências */

@@ -2,6 +2,7 @@ import { Game } from '../models/Game';
 import { Review } from '../models/Review';
 import { User } from '../models/User';
 import { ReviewRepository } from '../repositories/ReviewRepository';
+import { UserRepository } from '../repositories/UserRepository';
 
 export interface ReviewSummary {
   averageRating: number;
@@ -11,6 +12,7 @@ export interface ReviewSummary {
 export class ReviewService {
   private static instance: ReviewService;
   private repository = new ReviewRepository();
+  private userRepository = new UserRepository();
 
   static getInstance(): ReviewService {
     if (!ReviewService.instance) {
@@ -60,6 +62,35 @@ export class ReviewService {
 
   async getUserGameReview(userId: string, gameId: string): Promise<Review | null> {
     return this.repository.getUserGameReview(userId, gameId);
+  }
+
+  async getRecentPublicReviews(limitTo = 10): Promise<Review[]> {
+    const reviews = await this.repository.findAll();
+    const sortedReviews = reviews
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+      .slice(0, Math.max(limitTo * 3, limitTo));
+
+    const authorIds = [...new Set(sortedReviews.map((review) => review.userId))];
+    const authors = await Promise.all(authorIds.map((userId) => this.userRepository.findById(userId)));
+    const authorMap = new Map(
+      authors
+        .filter((user): user is User => user !== null)
+        .map((user) => [user.uid, user]),
+    );
+
+    return sortedReviews
+      .filter((review) => authorMap.get(review.userId)?.preferences.publicActivity)
+      .map((review) => {
+        const author = authorMap.get(review.userId);
+        if (!author) return review;
+
+        return new Review({
+          ...review,
+          username: author.username,
+          userDisplayName: author.displayName,
+        });
+      })
+      .slice(0, limitTo);
   }
 
   getSummary(reviews: Review[]): ReviewSummary {

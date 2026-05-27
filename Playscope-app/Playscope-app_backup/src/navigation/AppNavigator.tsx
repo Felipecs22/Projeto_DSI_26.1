@@ -13,7 +13,6 @@ import HomeScreen      from '../screens/HomeScreen';
 import MyGamesScreen   from '../screens/MyGamesScreen';
 import CommunityScreen from '../screens/CommunityScreen';
 import FriendsScreen   from '../screens/FriendsScreen';
-import NewsScreen      from '../screens/NewsScreen';
 import ProfileScreen   from '../screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
@@ -77,13 +76,13 @@ function MainTabs() {
         tabBarActiveTintColor:   colors.ACCENT,
         tabBarInactiveTintColor: colors.TEXT_MUTED,
         tabBarLabelStyle: { fontSize: 10, fontWeight: '600', marginTop: 2 },
+        tabBarItemStyle: { flex: 1 },
       }}
     >
       <Tab.Screen name="Início"      component={HomeScreen}      options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" focused={focused} /> }} />
       <Tab.Screen name="Meus Jogos"  component={MyGamesScreen}   options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🎮" focused={focused} /> }} />
       <Tab.Screen name="Comunidade"  component={CommunityScreen} options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="👥" focused={focused} /> }} />
       <Tab.Screen name="Amigos"      component={FriendsScreen}   options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🤝" focused={focused} /> }} />
-      <Tab.Screen name="Novidades"   component={NewsScreen}      options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📰" focused={focused} /> }} />
       <Tab.Screen name="Perfil"      component={ProfileScreen}   options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} /> }} />
     </Tab.Navigator>
   );
