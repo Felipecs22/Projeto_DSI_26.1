@@ -4,45 +4,23 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet } from 'react-native';
 
-import LoginScreen    from '../screens/LoginScreen';
+// Importações corrigidas apontando para a pasta screens correta
+import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-import HomeScreen     from '../screens/HomeScreen';
-import MyGamesScreen  from '../screens/MyGamesScreen';
-import CommunityScreen from '../screens/CommunityScreen';
-import FriendsScreen  from '../screens/FriendsScreen';
-import NewsScreen     from '../screens/NewsScreen';
-import ProfileScreen  from '../screens/ProfileScreen';
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen'; 
 
 const Stack = createNativeStackNavigator();
-const Tab   = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
-/* ─── Tab icon component ───────────────────────────────────────────────────── */
-function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
+function Placeholder({ name }: { name: string }) {
   return (
-    <View style={[tabIconStyles.wrapper, focused && tabIconStyles.wrapperActive]}>
-      <Text style={tabIconStyles.emoji}>{emoji}</Text>
+    <View style={styles.placeholderContainer}>
+      <Text style={styles.placeholderText}>{name}</Text>
     </View>
   );
 }
 
-const tabIconStyles = StyleSheet.create({
-  wrapper: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
-  wrapperActive: {
-    backgroundColor: 'rgba(0, 211, 148, 0.15)',
-  },
-  emoji: {
-    fontSize: 20,
-  },
-});
-
-/* ─── Bottom Tab Navigator ─────────────────────────────────────────────────── */
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -50,79 +28,60 @@ function MainTabs() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#0A0E17',
-          borderTopColor:  '#1C2633',
-          borderTopWidth:  1,
-          height:          68,
-          paddingBottom:   10,
-          paddingTop:      6,
+          borderTopColor: '#1C2633',
+          height: 64,
+          paddingBottom: 8,
+          paddingTop: 8,
         },
-        tabBarActiveTintColor:   '#00D394',
-        tabBarInactiveTintColor: '#4A5878',
-        tabBarLabelStyle: {
-          fontSize:   10,
-          fontWeight: '600',
-          marginTop:  2,
-        },
+        tabBarActiveTintColor: '#00D394',
+        tabBarInactiveTintColor: '#8A99A8',
       }}
     >
-      <Tab.Screen
-        name="Início"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" focused={focused} />,
-        }}
-      />
-      <Tab.Screen
-        name="Meus Jogos"
-        component={MyGamesScreen}
-        options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🎮" focused={focused} />,
-        }}
-      />
-      <Tab.Screen
-        name="Comunidade"
-        component={CommunityScreen}
-        options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="👥" focused={focused} />,
-        }}
-      />
-      <Tab.Screen
-        name="Amigos"
-        component={FriendsScreen}
-        options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🤝" focused={focused} />,
-        }}
-      />
-      <Tab.Screen
-        name="Novidades"
-        component={NewsScreen}
-        options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="📰" focused={focused} />,
-        }}
-      />
-      <Tab.Screen
-        name="Perfil"
-        component={ProfileScreen}
-        options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} />,
-        }}
-      />
+      <Tab.Screen name="Início" component={HomeScreen} />
+      <Tab.Screen name="Meus Jogos">
+        {() => <Placeholder name="Meus Jogos" />}
+      </Tab.Screen>
+      <Tab.Screen name="Comunidade">
+        {() => <Placeholder name="Comunidade" />}
+      </Tab.Screen>
+      <Tab.Screen name="Amigos">
+        {() => <Placeholder name="Amigos" />}
+      </Tab.Screen>
+      <Tab.Screen name="Novidades">
+        {() => <Placeholder name="Novidades" />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }
 
-/* ─── Root Stack Navigator ─────────────────────────────────────────────────── */
 export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Login"
-        screenOptions={{ headerShown: false, animation: 'fade' }}
+        screenOptions={{
+          headerShown: false,
+        }}
       >
-        <Stack.Screen name="Login"     component={LoginScreen}    />
-        <Stack.Screen name="Register"  component={RegisterScreen} />
-        <Stack.Screen name="MainTabs"  component={MainTabs}       />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="MainTabs" component={MainTabs} />
+        <Stack.Screen name="Perfil" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  placeholderContainer: {
+    flex: 1,
+    backgroundColor: '#0A0E17',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderText: {
+    color: '#FFFFFF',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+});

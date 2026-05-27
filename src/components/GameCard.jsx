@@ -13,7 +13,13 @@ import StarRating from './StarRating';
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 16 * 2 - 12) / 2; // 2 cols with padding + gap
 
-export default function GameCard({ game, onPress, showRating = false, showWantBtn = false, onWant }) {
+export default function GameCard({ 
+  game, 
+  onPress = () => {}, 
+  showRating = false, 
+  showWantBtn = false, 
+  onWant = () => {} 
+}) {
   const [imgError, setImgError] = useState(false);
 
   return (
