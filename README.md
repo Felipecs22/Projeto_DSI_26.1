@@ -76,7 +76,6 @@ src/
 | Meus Jogos | Biblioteca com 6 filtros de status + StatusModal |
 | Comunidade | Jogos mais jogados + reviews recentes |
 | Amigos | Lista, reviews e feed de atividade |
-| Novidades | Notícia destaque + grid de news |
 | Perfil | Avatar (Ninja/Robô/Cowboy), edição de dados, preferências, segurança, zona de perigo |
 
 ---
