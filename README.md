@@ -22,6 +22,11 @@ App mobile de gerenciamento e descoberta de jogos com catálogo real Steam.
 npm install
 npx expo start
 ```
+## Rode o código em:
+
+```bash
+Playscope-app/Playscope-app_backup
+```
 
 ---
 
