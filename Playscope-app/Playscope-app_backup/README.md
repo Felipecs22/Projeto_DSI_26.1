@@ -23,8 +23,6 @@ npm install
 npx expo start
 ```
 
-> Para usar Firebase: veja `FIREBASE_SETUP.md`
-
 ---
 
 ## Estrutura
