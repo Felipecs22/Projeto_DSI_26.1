@@ -1,0 +1,51 @@
+export const darkColors = {
+  BG_PRIMARY: '#0A0E17',
+  BG_SECONDARY: '#0E1420',
+  BG_CARD: '#141A26',
+  BG_INPUT: '#1A2133',
+  BG_MODAL: '#111827',
+  ACCENT: '#00D394',
+  ACCENT_DIM: '#00B87A',
+  ACCENT_GLOW: 'rgba(0, 211, 148, 0.18)',
+  TEXT_PRIMARY: '#F0F4FF',
+  TEXT_SECONDARY: '#8A99A8',
+  TEXT_MUTED: '#4A5878',
+  BORDER: '#1C2633',
+  BORDER_LIGHT: '#243040',
+  ONLINE: '#00D394',
+  OFFLINE: '#6B7A99',
+  STAR: '#F5C842',
+  DANGER: '#E53E3E',
+  WHITE: '#FFFFFF',
+  BLACK: '#000000',
+  SURFACE_TINT: 'rgba(0,0,0,0.55)',
+  SCRIM: 'rgba(0,0,0,0.6)',
+};
+
+export const lightColors = {
+  BG_PRIMARY: '#F5F7FB',
+  BG_SECONDARY: '#EDF2F7',
+  BG_CARD: '#FFFFFF',
+  BG_INPUT: '#E9EEF5',
+  BG_MODAL: '#FFFFFF',
+  ACCENT: '#008E67',
+  ACCENT_DIM: '#007755',
+  ACCENT_GLOW: 'rgba(0, 142, 103, 0.16)',
+  TEXT_PRIMARY: '#152033',
+  TEXT_SECONDARY: '#4C5E73',
+  TEXT_MUTED: '#6F8094',
+  BORDER: '#D5DEE9',
+  BORDER_LIGHT: '#C7D2E0',
+  ONLINE: '#008E67',
+  OFFLINE: '#8A99A8',
+  STAR: '#D39B09',
+  DANGER: '#C53030',
+  WHITE: '#FFFFFF',
+  BLACK: '#000000',
+  SURFACE_TINT: 'rgba(0,0,0,0.42)',
+  SCRIM: 'rgba(10,14,23,0.45)',
+};
+
+const Colors = darkColors;
+
+export default Colors;
