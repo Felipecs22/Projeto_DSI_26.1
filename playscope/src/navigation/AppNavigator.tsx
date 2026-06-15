@@ -15,6 +15,7 @@ import MyGamesScreen   from '../screens/MyGamesScreen';
 import CommunityScreen from '../screens/CommunityScreen';
 import FriendsScreen   from '../screens/FriendsScreen';
 import ProfileScreen   from '../screens/ProfileScreen';
+import NearbyScreen    from '../screens/NearbyScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab   = createBottomTabNavigator();
@@ -79,11 +80,12 @@ function MainTabs() {
         tabBarItemStyle: { flex: 1 },
       }}
     >
-      <Tab.Screen name="Início"      component={HomeScreen}      options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="home"          focused={focused} color={color} /> }} />
-      <Tab.Screen name="Meus Jogos"  component={MyGamesScreen}   options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="game-controller" focused={focused} color={color} /> }} />
-      <Tab.Screen name="Comunidade"  component={CommunityScreen} options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="people"         focused={focused} color={color} /> }} />
-      <Tab.Screen name="Amigos"      component={FriendsScreen}   options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="person-add"     focused={focused} color={color} /> }} />
-      <Tab.Screen name="Perfil"      component={ProfileScreen}   options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="person"         focused={focused} color={color} /> }} />
+      <Tab.Screen name="Início"      component={HomeScreen}      options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="home"           focused={focused} color={color} /> }} />
+      <Tab.Screen name="Meus Jogos"  component={MyGamesScreen}   options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="game-controller"  focused={focused} color={color} /> }} />
+      <Tab.Screen name="Comunidade"  component={CommunityScreen} options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="people"           focused={focused} color={color} /> }} />
+      <Tab.Screen name="Mapa"        component={NearbyScreen}    options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="map"              focused={focused} color={color} /> }} />
+      <Tab.Screen name="Amigos"      component={FriendsScreen}   options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="person-add"       focused={focused} color={color} /> }} />
+      <Tab.Screen name="Perfil"      component={ProfileScreen}   options={{ tabBarIcon: ({ focused, color }) => <TabIcon name="person"           focused={focused} color={color} /> }} />
     </Tab.Navigator>
   );
 }
