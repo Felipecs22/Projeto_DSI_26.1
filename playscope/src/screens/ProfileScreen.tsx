@@ -173,7 +173,7 @@ export default function ProfileScreen() {
       setUserReviews(
         reviews.map((review) => ({
           id: review.id,
-          user: review.userDisplayName || review.username,
+          user: user?.displayName ?? review.userDisplayName ?? review.username,
           game: review.gameName,
           rating: review.rating,
           ratingLabel: review.ratingLabel,
@@ -280,6 +280,17 @@ export default function ProfileScreen() {
     ]);
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      'Sair da conta',
+      'Tem certeza que deseja sair?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Sair', style: 'destructive', onPress: logout },
+      ],
+    );
+  };
+
   const handlePasswordReset = async () => {
     try {
       await authService.sendPasswordReset(email);
@@ -384,7 +395,6 @@ export default function ProfileScreen() {
         </SectionCard>
 
         <SectionCard title="Preferências" icon={<Ionicons name="settings-outline" size={16} color={colors.TEXT_MUTED} />} styles={styles}>
-          <PrefRow label="Notificações" value={prefs.notifications ?? true} onChange={(value: boolean) => savePreference('notifications', value)} styles={styles} colors={colors} />
           <PrefRow label="Modo escuro" value={prefs.darkMode ?? true} onChange={(value: boolean) => savePreference('darkMode', value)} styles={styles} colors={colors} />
           <PrefRow label="Publicar atividade" value={prefs.publicActivity ?? true} onChange={(value: boolean) => savePreference('publicActivity', value)} styles={styles} colors={colors} />
           <PrefRow label="Biblioteca pública" value={prefs.publicLibrary ?? true} onChange={(value: boolean) => savePreference('publicLibrary', value)} styles={styles} colors={colors} />
@@ -410,8 +420,7 @@ export default function ProfileScreen() {
 
         <SectionCard title="Segurança" icon={<Ionicons name="lock-closed-outline" size={16} color={colors.TEXT_MUTED} />} styles={styles}>
           <ActionRow label="Alterar senha" onPress={handlePasswordReset} styles={styles} />
-          <ActionRow label="Desconectar outros dispositivos" onPress={handlePasswordReset} styles={styles} />
-          <ActionRow label="Sair da conta" onPress={logout} styles={styles} />
+          <ActionRow label="Sair da conta" onPress={handleLogout} styles={styles} />
         </SectionCard>
 
         <SectionCard title="Zona de Perigo" icon={<Ionicons name="warning-outline" size={16} color={colors.DANGER} />} styles={styles}>

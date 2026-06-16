@@ -18,6 +18,22 @@ export default function LoginScreen({ navigation }: any) {
   const [showPass, setShowPass] = useState(false);
   const [loading,  setLoading]  = useState(false);
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      Alert.alert('Atenção', 'Digite seu e-mail no campo acima para redefinir a senha.');
+      return;
+    }
+    setLoading(true);
+    try {
+      await AuthService.getInstance().sendPasswordReset(email.trim());
+      Alert.alert('E-mail enviado', `Enviamos um link de redefinição para ${email}.`);
+    } catch (e: any) {
+      Alert.alert('Erro', e.message ?? 'Não foi possível enviar o e-mail.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Atenção', 'Preencha e-mail e senha.');
@@ -78,7 +94,7 @@ export default function LoginScreen({ navigation }: any) {
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.forgotBtn}>
+            <TouchableOpacity style={styles.forgotBtn} onPress={handleForgotPassword}>
               <Text style={styles.forgotText}>Esqueceu a senha?</Text>
             </TouchableOpacity>
 
