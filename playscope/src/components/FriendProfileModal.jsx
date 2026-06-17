@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
+import ProfileAvatar from './ProfileAvatar';
 
 function StatCard({ label, value, styles }) {
   return (
@@ -40,9 +41,11 @@ export default function FriendProfileModal({
             </View>
           ) : friendProfile ? (
             <>
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>{friendProfile.user.initials}</Text>
-              </View>
+              <ProfileAvatar
+                avatarId={friendProfile.user.avatarId}
+                photoURL={friendProfile.user.photoURL}
+                size={72}
+              />
 
               <Text style={styles.name}>{friendProfile.user.displayName}</Text>
               <Text style={styles.username}>{friendProfile.user.username}</Text>

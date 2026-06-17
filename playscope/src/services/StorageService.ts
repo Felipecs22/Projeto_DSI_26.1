@@ -1,59 +1,34 @@
-/**
- * StorageService — upload de arquivos do usuário para Firebase Storage.
- */
-
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from './firebase.config';
+import { UserRepository } from '../repositories/UserRepository';
 
 export class StorageService {
   private static instance: StorageService;
+  private userRepo = new UserRepository();
+
+  private constructor() {}
 
   static getInstance(): StorageService {
-    if (!StorageService.instance) StorageService.instance = new StorageService();
+    if (!StorageService.instance) {
+      StorageService.instance = new StorageService();
+    }
     return StorageService.instance;
   }
 
-  /**
-   * Faz upload da foto de perfil e retorna a URL pública.
-   * @param userId  UID do usuário
-   * @param uri     URI local da imagem (ex: de ImagePicker)
-   * @param mimeType ex: 'image/jpeg'
-   */
-  async uploadProfilePhoto(userId: string, uri: string, mimeType = 'image/jpeg'): Promise<string> {
-    try {
-      // Converte URI local para Blob
-      const response = await fetch(uri);
-      const blob     = await response.blob();
+  async uploadProfilePhoto(userId: string, uri: string): Promise<string> {
+    const response = await fetch(uri);
+    const blob = await response.blob();
 
-      const path     = `users/${userId}/profile.jpg`;
-      const fileRef  = ref(storage, path);
+    const storageRef = ref(storage, `avatars/${userId}/profile.jpg`);
+    await uploadBytes(storageRef, blob);
 
-      await uploadBytes(fileRef, blob, { contentType: mimeType });
-      const downloadURL = await getDownloadURL(fileRef);
-      return downloadURL;
-    } catch (error: any) {
-      throw new Error(`Erro ao enviar foto: ${error?.message ?? 'desconhecido'}`);
-    }
-  }
+    const downloadURL = await getDownloadURL(storageRef);
 
-  /**
-   * Remove a foto de perfil do usuário do Storage.
-   */
-  async deleteProfilePhoto(userId: string): Promise<void> {
-    try {
-      const path    = `users/${userId}/profile.jpg`;
-      const fileRef = ref(storage, path);
-      await deleteObject(fileRef);
-    } catch {
-      // Ignora se o arquivo não existir
-    }
-  }
+    await this.userRepo.updateProfile(userId, {
+      photoURL: downloadURL,
+      avatarId: null,
+    });
 
-  /**
-   * Retorna a URL pública de qualquer arquivo no Storage.
-   */
-  async getURL(path: string): Promise<string> {
-    const fileRef = ref(storage, path);
-    return getDownloadURL(fileRef);
+    return downloadURL;
   }
 }

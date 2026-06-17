@@ -16,16 +16,19 @@ import {
 import SectionTitle from '../components/SectionTitle';
 import ReviewCard from '../components/ReviewCard';
 import FriendProfileModal from '../components/FriendProfileModal';
+import ProfileAvatar from '../components/ProfileAvatar';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { FriendService, type FriendListItem, type FriendProfileSnapshot } from '../services/FriendService';
 import { User } from '../models/User';
 
-function FriendAvatar({ user, styles }: { user: User; styles: any }) {
+function FriendAvatar({ user }: { user: User }) {
   return (
-    <View style={styles.friendAvatar}>
-      <Text style={styles.friendAvatarText}>{user.initials}</Text>
-    </View>
+    <ProfileAvatar
+      avatarId={user.avatarId}
+      photoURL={user.photoURL}
+      size={44}
+    />
   );
 }
 
@@ -59,7 +62,7 @@ function FriendItem({
   const content = (
     <View style={styles.friendItem}>
       <View style={styles.friendIdentity}>
-        <FriendAvatar user={item.user} styles={styles} />
+        <FriendAvatar user={item.user} />
         <View style={styles.friendMeta}>
           <Text style={styles.friendName}>{item.user.displayName}</Text>
           <Text style={styles.friendUsername}>{item.user.username}</Text>
@@ -384,7 +387,7 @@ export default function FriendsScreen() {
             {searchResult ? (
               <View style={styles.resultCard}>
                 <View style={styles.friendIdentity}>
-                  <FriendAvatar user={searchResult} styles={styles} />
+                  <FriendAvatar user={searchResult} />
                   <View style={styles.friendMeta}>
                     <Text style={styles.friendName}>{searchResult.displayName}</Text>
                     <Text style={styles.friendUsername}>{searchResult.username}</Text>

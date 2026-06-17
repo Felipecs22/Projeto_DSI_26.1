@@ -16,6 +16,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import ProfileAvatar, { AVATAR_LIST } from '../components/ProfileAvatar';
 import ReviewCard from '../components/ReviewCard';
 import { useAuth } from '../context/AuthContext';
@@ -25,6 +26,7 @@ import { UserRepository } from '../repositories/UserRepository';
 import { AuthService } from '../services/AuthService';
 import { LibraryService } from '../services/LibraryService';
 import { ReviewService } from '../services/ReviewService';
+import { StorageService } from '../services/StorageService';
 
 function SectionCard({ title, icon, children, styles }: any) {
   return (
@@ -100,9 +102,10 @@ export default function ProfileScreen() {
   const styles = createStyles(colors);
 
   const userRepo = new UserRepository();
-  const authService = AuthService.getInstance();
+  const authService    = AuthService.getInstance();
   const libraryService = LibraryService.getInstance();
-  const reviewService = ReviewService.getInstance();
+  const reviewService  = ReviewService.getInstance();
+  const storageService = StorageService.getInstance();
 
   const [avatarPickerVisible, setAvatarPickerVisible] = useState(false);
   const [editModal, setEditModal] = useState<{ field: string; label: string; value: string } | null>(null);
@@ -238,13 +241,45 @@ export default function ProfileScreen() {
 
   const saveAvatar = async (id: string | null) => {
     setAvatarId(id);
+    setPhotoURL(null);
     if (!user) return;
 
     try {
-      await userRepo.updateProfile(user.uid, { avatarId: id });
+      await userRepo.updateProfile(user.uid, { avatarId: id, photoURL: null });
       await refreshUser();
     } catch (error: any) {
       Alert.alert('Erro', error.message);
+    }
+  };
+
+  const handlePickPhoto = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissao necessaria', 'Precisamos de acesso a galeria para trocar sua foto de perfil.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.75,
+    });
+
+    if (result.canceled) return;
+
+    try {
+      setSaving(true);
+      const url = await storageService.uploadProfilePhoto(user!.uid, result.assets[0].uri);
+      setPhotoURL(url);
+      setAvatarId(null);
+      await refreshUser();
+      showToast('Foto de perfil atualizada!');
+      setAvatarPickerVisible(false);
+    } catch (error: any) {
+      showToast(error?.message ?? 'Nao foi possivel salvar a foto.', 'error');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -446,6 +481,20 @@ export default function ProfileScreen() {
           <Pressable style={styles.modalSheet} onPress={() => {}}>
             <View style={styles.modalHandle} />
             <Text style={styles.modalTitle}>Escolher Avatar</Text>
+
+            <TouchableOpacity
+              style={styles.galleryBtn}
+              onPress={handlePickPhoto}
+              disabled={saving}
+            >
+              <View style={styles.galleryBtnContent}>
+                <Ionicons name="image-outline" size={20} color={colors.ACCENT} />
+                <Text style={styles.galleryBtnText}>
+                  {saving ? 'Enviando...' : 'Escolher da galeria'}
+                </Text>
+              </View>
+            </TouchableOpacity>
+
             <View style={styles.avatarGrid}>
               {AVATAR_LIST.map(({ id, label, Component }) => (
                 <TouchableOpacity
@@ -710,6 +759,26 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontWeight: '700',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  galleryBtn: {
+    borderWidth: 1,
+    borderColor: colors.ACCENT,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 20,
+    backgroundColor: 'rgba(0,211,148,0.07)',
+  },
+  galleryBtnContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  galleryBtnText: {
+    color: colors.ACCENT,
+    fontWeight: '600',
+    fontSize: 14,
   },
   avatarGrid: {
     flexDirection: 'row',

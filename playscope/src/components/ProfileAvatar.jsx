@@ -99,7 +99,23 @@ export const AVATAR_LIST = [
   { id: 'cowboy', label: 'Cowboy', Component: CowboyAvatar },
 ];
 
-export default function ProfileAvatar({ avatarId, size = 80 }) {
+export default function ProfileAvatar({ avatarId, photoURL = null, size = 80 }) {
+  if (photoURL) {
+    const { Image } = require('react-native');
+    return (
+      <Image
+        source={{ uri: photoURL }}
+        style={{
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          borderWidth: 2,
+          borderColor: Colors.ACCENT,
+        }}
+      />
+    );
+  }
+
   const found = AVATAR_LIST.find(a => a.id === avatarId);
   if (!found) return <EmptyAvatar size={size} />;
   const { Component } = found;
