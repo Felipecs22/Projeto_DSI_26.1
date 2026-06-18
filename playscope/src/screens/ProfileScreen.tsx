@@ -8,13 +8,13 @@ import {
   Pressable,
   TextInput,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   Alert,
   Switch,
   Image,
   ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import ProfileAvatar, { AVATAR_LIST } from '../components/ProfileAvatar';

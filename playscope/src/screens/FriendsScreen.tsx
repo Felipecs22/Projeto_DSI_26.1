@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   Modal,
   Pressable,
@@ -13,6 +12,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import SectionTitle from '../components/SectionTitle';
 import ReviewCard from '../components/ReviewCard';
 import FriendProfileModal from '../components/FriendProfileModal';

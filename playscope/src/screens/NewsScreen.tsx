@@ -6,10 +6,10 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { newsList } from '../constants/data';
 import SectionTitle from '../components/SectionTitle';
 import { useTheme } from '../context/ThemeContext';

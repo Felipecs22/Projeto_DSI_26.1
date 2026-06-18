@@ -8,12 +8,12 @@ import {
   Modal,
   Pressable,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   FlatList,
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { gameTags } from '../constants/data';
 import { GameService } from '../services/GameService';
 import { LibraryService } from '../services/LibraryService';

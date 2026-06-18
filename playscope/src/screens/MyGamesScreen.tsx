@@ -5,11 +5,11 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import CategoryButton from '../components/CategoryButton';
 import GameCard from '../components/GameCard';
 import GameStatusButton from '../components/GameStatusButton';
@@ -148,7 +148,12 @@ export default function MyGamesScreen() {
         <GameStatusButton label="Atualizar" onPress={loadLibrary} />
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.filterScroll}
+        contentContainerStyle={styles.filterRow}
+      >
         {FILTERS.map((item) => (
           <CategoryButton
             key={item.id}
@@ -163,6 +168,7 @@ export default function MyGamesScreen() {
         <ActivityIndicator color={colors.ACCENT} style={{ marginTop: 40 }} />
       ) : (
         <FlatList
+          style={styles.list}
           data={filtered}
           keyExtractor={(item) => item.id}
           numColumns={2}
@@ -216,21 +222,26 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
   },
+  filterScroll: {
+    flexGrow: 0,
+    flexShrink: 0,
+  },
   filterRow: {
     paddingHorizontal: 16,
     paddingBottom: 12,
     gap: 8,
   },
+  list: {
+    flex: 1,
+  },
   grid: {
     paddingHorizontal: 16,
     paddingTop: 4,
     paddingBottom: 24,
-    flexGrow: 1,
   },
   emptyState: {
-    flex: 1,
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: 80,
   },
   emptyIcon: {
     fontSize: 40,

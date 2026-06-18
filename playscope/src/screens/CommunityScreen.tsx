@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import {
-  View, Text, ScrollView, StyleSheet, SafeAreaView,
+  View, Text, ScrollView, StyleSheet,
   StatusBar, FlatList, Image, TouchableOpacity, Alert, ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { GameService } from '../services/GameService';
 import { LibraryService } from '../services/LibraryService';
 import { ReviewService } from '../services/ReviewService';
