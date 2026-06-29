@@ -8,13 +8,13 @@ import {
   Pressable,
   TextInput,
   StyleSheet,
+  SafeAreaView,
   StatusBar,
   Alert,
   Switch,
   Image,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import ProfileAvatar, { AVATAR_LIST } from '../components/ProfileAvatar';
@@ -27,6 +27,8 @@ import { AuthService } from '../services/AuthService';
 import { LibraryService } from '../services/LibraryService';
 import { ReviewService } from '../services/ReviewService';
 import { StorageService } from '../services/StorageService';
+import { FriendService } from '../services/FriendService';
+import { getAllBadgesWithStatus, type BadgeResult } from '../constants/badges';
 
 function SectionCard({ title, icon, children, styles }: any) {
   return (
@@ -106,6 +108,7 @@ export default function ProfileScreen() {
   const libraryService = LibraryService.getInstance();
   const reviewService  = ReviewService.getInstance();
   const storageService = StorageService.getInstance();
+  const friendService  = FriendService.getInstance();
 
   const [avatarPickerVisible, setAvatarPickerVisible] = useState(false);
   const [editModal, setEditModal] = useState<{ field: string; label: string; value: string } | null>(null);
@@ -131,6 +134,8 @@ export default function ProfileScreen() {
     fila: 0,
     reviews: 0,
   });
+  const [badges, setBadges] = useState<BadgeResult[]>([]);
+  const [selectedBadge, setSelectedBadge] = useState<BadgeResult | null>(null);
   const [userReviews, setUserReviews] = useState<any[]>([]);
 
   useEffect(() => {
@@ -160,9 +165,10 @@ export default function ProfileScreen() {
 
     setLoadingStats(true);
     try {
-      const [library, reviews] = await Promise.all([
+      const [library, reviews, friends] = await Promise.all([
         libraryService.getUserLibrary(user.uid),
         reviewService.getUserReviews(user.uid),
+        friendService.getFriends(user.uid),
       ]);
 
       const libraryStats = libraryService.getStats(library);
@@ -173,6 +179,21 @@ export default function ProfileScreen() {
         fila: libraryStats.fila,
         reviews: reviews.length,
       });
+
+      setBadges(
+        getAllBadgesWithStatus({
+          total: libraryStats.total,
+          jogados: libraryStats.jogados,
+          jogando: libraryStats.jogando,
+          pausados: libraryStats.pausados,
+          abandonados: libraryStats.abandonados,
+          fila: libraryStats.fila,
+          reviewCount: reviews.length,
+          friendCount: friends.length,
+          createdAt: user.createdAt,
+        }),
+      );
+
       setUserReviews(
         reviews.map((review) => ({
           id: review.id,
@@ -402,6 +423,30 @@ export default function ProfileScreen() {
           )}
         </View>
 
+        <SectionCard title="Conquistas" icon={<Ionicons name="ribbon-outline" size={16} color={colors.TEXT_MUTED} />} styles={styles}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.badgeRow}>
+            {badges.map((badge) => (
+              <TouchableOpacity
+                key={badge.id}
+                style={[styles.badgeItem, !badge.earned && styles.badgeItemLocked]}
+                onPress={() => setSelectedBadge(badge)}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.badgeIconWrapper, !badge.earned && styles.badgeIconWrapperLocked]}>
+                  <Ionicons
+                    name={badge.icon as any}
+                    size={22}
+                    color={badge.earned ? colors.ACCENT : colors.TEXT_MUTED}
+                  />
+                </View>
+                <Text style={[styles.badgeLabel, !badge.earned && styles.badgeLabelLocked]} numberOfLines={1}>
+                  {badge.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </SectionCard>
+
         <SectionCard title="Informações pessoais" icon={<Ionicons name="person-outline" size={16} color={colors.TEXT_MUTED} />} styles={styles}>
           <InfoRow
             label="Nome"
@@ -518,6 +563,58 @@ export default function ProfileScreen() {
                   <Text style={styles.removeAvatarText}>Remover avatar atual</Text>
                 </View>
               </TouchableOpacity>
+            ) : null}
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      <Modal
+        visible={!!selectedBadge}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setSelectedBadge(null)}
+        statusBarTranslucent
+      >
+        <Pressable style={styles.modalBackdrop} onPress={() => setSelectedBadge(null)}>
+          <Pressable style={styles.modalSheet} onPress={() => {}}>
+            <View style={styles.modalHandle} />
+
+            {selectedBadge ? (
+              <>
+                <View
+                  style={[
+                    styles.badgeDetailIconWrapper,
+                    !selectedBadge.earned && styles.badgeIconWrapperLocked,
+                  ]}
+                >
+                  <Ionicons
+                    name={selectedBadge.icon as any}
+                    size={40}
+                    color={selectedBadge.earned ? colors.ACCENT : colors.TEXT_MUTED}
+                  />
+                </View>
+
+                <Text style={styles.modalTitle}>{selectedBadge.label}</Text>
+
+                <View style={[styles.badgeStatusPill, selectedBadge.earned ? styles.badgeStatusEarned : styles.badgeStatusLocked]}>
+                  <Ionicons
+                    name={selectedBadge.earned ? 'checkmark-circle' : 'lock-closed'}
+                    size={13}
+                    color={selectedBadge.earned ? colors.ACCENT : colors.TEXT_MUTED}
+                  />
+                  <Text style={[styles.badgeStatusText, { color: selectedBadge.earned ? colors.ACCENT : colors.TEXT_MUTED }]}>
+                    {selectedBadge.earned ? 'Conquistada' : 'Ainda não conquistada'}
+                  </Text>
+                </View>
+
+                <Text style={styles.badgeDetailDescription}>
+                  {selectedBadge.description}
+                </Text>
+
+                <TouchableOpacity style={styles.modalCloseBtn} onPress={() => setSelectedBadge(null)}>
+                  <Text style={styles.modalCloseBtnText}>Fechar</Text>
+                </TouchableOpacity>
+              </>
             ) : null}
           </Pressable>
         </Pressable>
@@ -657,6 +754,82 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.BG_SECONDARY,
   },
   cardIconWrapper:  { width: 22, alignItems: 'center', justifyContent: 'center' },
+  badgeRow: {
+    flexDirection: 'row',
+    gap: 14,
+    paddingVertical: 4,
+  },
+  badgeItem: {
+    alignItems: 'center',
+    width: 72,
+  },
+  badgeItemLocked: {
+    opacity: 0.4,
+  },
+  badgeIconWrapper: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(0,211,148,0.12)',
+    borderWidth: 1.5,
+    borderColor: colors.ACCENT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
+  },
+  badgeIconWrapperLocked: {
+    backgroundColor: colors.BG_CARD,
+    borderColor: colors.BORDER,
+  },
+  badgeLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: colors.TEXT_PRIMARY,
+    textAlign: 'center',
+  },
+  badgeLabelLocked: {
+    color: colors.TEXT_MUTED,
+  },
+  badgeDetailIconWrapper: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(0,211,148,0.12)',
+    borderWidth: 1.5,
+    borderColor: colors.ACCENT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  badgeStatusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    alignSelf: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 20,
+    marginBottom: 16,
+  },
+  badgeStatusEarned: {
+    backgroundColor: 'rgba(0,211,148,0.12)',
+  },
+  badgeStatusLocked: {
+    backgroundColor: colors.BG_CARD,
+  },
+  badgeStatusText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  badgeDetailDescription: {
+    fontSize: 14,
+    color: colors.TEXT_SECONDARY,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+    paddingHorizontal: 8,
+  },
   cardTitle: { color: colors.TEXT_PRIMARY, fontSize: 15, fontWeight: '700' },
   infoRow: {
     flexDirection: 'row',
