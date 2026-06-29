@@ -5,14 +5,15 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  SafeAreaView,
   StatusBar,
   Modal,
   Pressable,
   TextInput,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import SectionTitle from '../components/SectionTitle';
 import ReviewCard from '../components/ReviewCard';
 import FriendProfileModal from '../components/FriendProfileModal';
@@ -107,10 +108,17 @@ export default function FriendsScreen() {
   const [profileVisible, setProfileVisible] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [friendProfile, setFriendProfile] = useState<FriendProfileSnapshot | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     void loadFriendsData();
   }, [user?.uid]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadFriendsData();
+    setRefreshing(false);
+  };
 
   const loadFriendsData = async () => {
     if (!user) {
@@ -249,7 +257,17 @@ export default function FriendsScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} backgroundColor={colors.BG_PRIMARY} />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={(
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={colors.ACCENT}
+            colors={[colors.ACCENT]}
+          />
+        )}
+      >
         <View style={styles.section}>
           <SectionTitle
             title="Amigos"

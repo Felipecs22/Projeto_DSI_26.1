@@ -8,6 +8,7 @@ import {
   StatusBar,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CategoryButton from '../components/CategoryButton';
@@ -59,6 +60,7 @@ export default function MyGamesScreen() {
   const [filter, setFilter] = useState('todos');
   const [library, setLibrary] = useState<UserGame[]>([]);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
   const loadLibrary = useCallback(async () => {
@@ -81,6 +83,12 @@ export default function MyGamesScreen() {
   useEffect(() => {
     loadLibrary();
   }, [loadLibrary]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadLibrary();
+    setRefreshing(false);
+  };
 
   const handleStatusChange = async (newStatus: GameStatus) => {
     if (!selectedGame || !user) return;
@@ -175,6 +183,14 @@ export default function MyGamesScreen() {
           contentContainerStyle={styles.grid}
           columnWrapperStyle={{ justifyContent: 'space-between' }}
           showsVerticalScrollIndicator={false}
+          refreshControl={(
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={colors.ACCENT}
+              colors={[colors.ACCENT]}
+            />
+          )}
           ListEmptyComponent={(
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon}>🎮</Text>

@@ -8,12 +8,13 @@ import {
   Modal,
   Pressable,
   StyleSheet,
+  SafeAreaView,
   StatusBar,
   FlatList,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { gameTags } from '../constants/data';
 import { GameService } from '../services/GameService';
 import { LibraryService } from '../services/LibraryService';
@@ -55,6 +56,7 @@ export default function HomeScreen({ navigation }: any) {
   const [userReview, setUserReview] = useState<Review | null>(null);
   const [reviewSummary, setReviewSummary] = useState({ averageRating: 0, totalReviews: 0 });
   const [libraryStatuses, setLibraryStatuses] = useState<Record<string, GameStatus>>({});
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setRecommended(gameService.getRecommended(12));
@@ -100,6 +102,14 @@ export default function HomeScreen({ navigation }: any) {
     } catch {
       setLibraryStatuses({});
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    setRecommended(gameService.getRecommended(12));
+    setTrending(gameService.getTrending(12));
+    if (user) await loadLibraryStatuses();
+    setRefreshing(false);
   };
 
   const loadGameContext = async (game: Game) => {
@@ -214,7 +224,17 @@ export default function HomeScreen({ navigation }: any) {
           )}
         </View>
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={(
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={colors.ACCENT}
+              colors={[colors.ACCENT]}
+            />
+          )}
+        >
           <View style={styles.section}>
             <SectionTitle
               title="Recomendações"

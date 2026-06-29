@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import {
-  View, Text, ScrollView, StyleSheet,
+  View, Text, ScrollView, StyleSheet, SafeAreaView,
   StatusBar, FlatList, Image, TouchableOpacity, Alert, ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { GameService } from '../services/GameService';
 import { LibraryService } from '../services/LibraryService';
 import { ReviewService } from '../services/ReviewService';
@@ -66,6 +66,7 @@ export default function CommunityScreen() {
   const [loadingCommunityReviews, setLoadingCommunityReviews] = useState(false);
   const [reviewSummary, setReviewSummary] = useState({ averageRating: 0, totalReviews: 0 });
   const [libraryStatuses, setLibraryStatuses] = useState<Record<string, GameStatus>>({});
+  const [refreshing, setRefreshing] = useState(false);
   const { user } = useAuth();
   const { colors, darkMode } = useTheme();
   const styles = createStyles(colors);
@@ -102,6 +103,15 @@ export default function CommunityScreen() {
     } catch {
       setLibraryStatuses({});
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    const svc = GameService.getInstance();
+    setTopGames(svc.getRecommended(8));
+    await loadCommunityReviews();
+    if (user) await loadLibraryStatuses();
+    setRefreshing(false);
   };
 
   const loadCommunityReviews = async () => {
@@ -194,7 +204,17 @@ export default function CommunityScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} backgroundColor={colors.BG_PRIMARY} />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={(
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={colors.ACCENT}
+            colors={[colors.ACCENT]}
+          />
+        )}
+      >
 
         {/* A Comunidade tem jogado */}
         <View style={styles.section}>
