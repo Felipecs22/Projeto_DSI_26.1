@@ -15,6 +15,7 @@ export interface FriendProfileSnapshot {
   user: User;
   stats: LibraryStats;
   reviewCount: number;
+  friendCount: number;
 }
 
 export class FriendService {
@@ -164,15 +165,19 @@ export class FriendService {
       throw new Error('Perfil do amigo não encontrado.');
     }
 
-    const [library, reviews] = await Promise.all([
+    const [library, reviews, friendRelations] = await Promise.all([
       this.libraryService.getUserLibrary(friendId),
       this.reviewRepo.getUserReviews(friendId),
+      this.friendRepo.getUserRelations(friendId),
     ]);
+
+    const acceptedFriends = friendRelations.filter((r) => r.status === 'accepted');
 
     return {
       user: friend,
       stats: this.libraryService.getStats(library),
       reviewCount: reviews.length,
+      friendCount: acceptedFriends.length,
     };
   }
 
